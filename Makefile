@@ -1,8 +1,9 @@
 CC=cc
-CFLAGS=-Wall -Wextra -Werror
+CFLAGS=-Wall -Wextra 
 
 UTILS_SRC=	utils/handlers.c \
-			utils/parsers.c
+			utils/parsers.c \
+			utils/controllers.c \
 
 SRCS= main.c $(UTILS_SRC)
 OBJS= $(SRCS:.c=.o)

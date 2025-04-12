@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 10:13:57 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/11 22:00:29 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/12 21:22:18 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,26 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	// t_cmd cmd;
-	char **paths;
-	// int fd_in;
-	// int fd_out;
-	// int pipefd[2];
-	paths = parse_path(envp);
-	if (!paths)
-		handle_error("Error parsing PATH");
-	printf("%s", argv[0]);
+	int		input_fd;
+	int		output_fd;
+	pid_t	pid;
+	int		status;
+	int		i;
+	int		pipefd[2];
+
 	if (argc != 5)
 		handle_error("Usage: ./pipex infile cmd1 cmd2 outfile");
-	input_handler(argv);
-	output_handler(argv);
-	printf("%s\n", command_handler(argv[2], envp));
-	free_split(paths);
+	input_fd = input_handler(argv);
+	output_fd = output_handler(argv);
+	if (pipe(pipefd) == -1)
+		handle_error("Pipe failed");
+	pid = fork();
+	if (pid == -1)
+		handle_error("Fork failed");
+	if (pid == 0)
+	{
+		close(pipefd[0]);
+		exec_command(input_fd, pipefd[1], argv[2], envp);
+	}
 	return (0);
 }

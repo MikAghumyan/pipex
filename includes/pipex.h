@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 10:12:07 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/11 21:58:54 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/12 20:30:56 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,7 @@ char		*command_handler(char *cmd, char **envp);
 
 char		**parse_path(char **envp);
 void		free_split(char **split);
+
+void		exec_command(int fd_in, int fd_out, char *cmd, char **envp);
 
 #endif

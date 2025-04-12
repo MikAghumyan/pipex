@@ -48,7 +48,7 @@ char	*command_handler(char *cmd, char **envp)
 
 	paths = parse_path(envp);
 	if (!paths)
-		handle_error("Error parsing PATH");
+		return (perror("Error parsing PATH"), NULL);
 	i = 0;
 	while (paths[i])
 	{
@@ -64,6 +64,5 @@ char	*command_handler(char *cmd, char **envp)
 		i++;
 	}
 	free_split(paths);
-	handle_error("Command not found");
-	return (NULL);
+	return (perror("Command not found"), NULL);
 }
