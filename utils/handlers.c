@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:26:36 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/11 21:58:41 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/13 17:09:07 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	input_handler(char **argv)
 
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
-		handle_error("Error opening input file");
+		perror("Error opening input file");
 	return (fd);
 }
 

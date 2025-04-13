@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 10:13:57 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/12 21:22:18 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/13 20:39:20 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,15 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	int		input_fd;
-	int		output_fd;
-	pid_t	pid;
-	int		status;
-	int		i;
-	int		pipefd[2];
+	int	input_fd;
+	int	output_fd;
 
 	if (argc != 5)
-		handle_error("Usage: ./pipex infile cmd1 cmd2 outfile");
+		return (ft_printf("Usage: ./pipex infile cmd1 cmd2 outfile\n"), 0);
 	input_fd = input_handler(argv);
 	output_fd = output_handler(argv);
-	if (pipe(pipefd) == -1)
-		handle_error("Pipe failed");
-	pid = fork();
-	if (pid == -1)
-		handle_error("Fork failed");
-	if (pid == 0)
-	{
-		close(pipefd[0]);
-		exec_command(input_fd, pipefd[1], argv[2], envp);
-	}
+	make_pipe(argv, envp, input_fd, output_fd);
+	while (wait(NULL) != -1)
+		;
 	return (0);
 }
