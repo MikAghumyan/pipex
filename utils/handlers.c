@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:26:36 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/13 17:09:07 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/14 14:35:04 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	handle_error(char *message)
 {
 	perror(message);
-	// printf("%s", message);
 	exit(EXIT_FAILURE);
 }
 
@@ -25,7 +24,7 @@ int	input_handler(char **argv)
 
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
-		perror("Error opening input file");
+		handle_error("Error opening input file");
 	return (fd);
 }
 
