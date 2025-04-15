@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:26:36 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/14 14:35:04 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/15 20:20:51 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ int	input_handler(char **argv)
 	return (fd);
 }
 
-int	output_handler(char **argv)
+int	output_handler(char **argv, int argc)
 {
 	int	fd;
 
-	fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 		handle_error("Error opening output file");
 	return (fd);

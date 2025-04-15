@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/14 17:21:52 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/15 20:26:17 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	fork_cmd1(int pipefd[2], char **argv, char **envp)
 	}
 }
 
-void	fork_cmd2(int pipefd[2], char **argv, char **envp, pid_t *pid_)
+pid_t	fork_cmd2(int pipefd[2], int argc, char **argv, char **envp)
 {
 	pid_t	pid;
 	int		output_fd;
@@ -39,14 +39,13 @@ void	fork_cmd2(int pipefd[2], char **argv, char **envp, pid_t *pid_)
 	if (pid == 0)
 	{
 		close(pipefd[1]);
-		output_fd = output_handler(argv);
-		exec_command(pipefd[0], output_fd, argv[3], envp);
+		output_fd = output_handler(argv, argc);
+		exec_command(pipefd[0], output_fd, argv[argc - 2], envp);
 	}
-	else
-		*pid_ = pid;
+	return (pid);
 }
 
-void	make_pipe(char **argv, char **envp)
+void	make_pipe(int argc, char **argv, char **envp)
 {
 	pid_t	pid;
 	int		pipefd[2];
@@ -55,7 +54,7 @@ void	make_pipe(char **argv, char **envp)
 	if (pipe(pipefd) == -1)
 		handle_error("Pipe failed");
 	fork_cmd1(pipefd, argv, envp);
-	fork_cmd2(pipefd, argv, envp, &pid);
+	pid = fork_cmd2(pipefd, argc, argv, envp);
 	close(pipefd[0]);
 	close(pipefd[1]);
 	waitpid(pid, &status1, 0);
