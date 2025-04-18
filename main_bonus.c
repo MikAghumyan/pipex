@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 18:48:56 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/16 21:20:55 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/18 01:42:16 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	int		heredoc_fd;
 	char	c;
 	int		cmd_count;
 
@@ -29,7 +28,6 @@ int	main(int argc, char **argv, char **envp)
 			return (0);
 		}
 		cmd_count--;
-		heredoc_fd = heredoc_handler(argv[2]);
 	}
 	make_pipe_bonus(argc, argv, envp, cmd_count);
 	return (0);

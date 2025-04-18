@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/16 21:24:02 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/18 01:43:25 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,7 @@ pid_t	fork_cmd2(int pipefd[2], int argc, char **argv, char **envp)
 	if (pid == 0)
 	{
 		close(pipefd[1]);
-		if (ft_strncmp(argv[1], "here_doc", 9) == 0)
-			;
-		else
-			output_fd = output_handler(argv, argc);
+		output_fd = output_handler(argv, argc);
 		exec_command(pipefd[0], output_fd, argv[argc - 2], envp);
 	}
 	return (pid);
