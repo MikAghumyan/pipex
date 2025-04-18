@@ -1,47 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   controllers_bonus.c                                :+:      :+:    :+:   */
+/*   pipe_controllers.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/18 01:47:59 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/18 17:14:53 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/pipex_bonus.h"
-
-void	fork_heredoc(int pipefd[2], int heredoc_fd, char *argv[], char *envp[])
-{
-	pid_t	pid;
-
-	pid = fork();
-	if (pid == -1)
-		handle_error("Pipe failed");
-	if (pid == 0)
-	{
-		close(pipefd[0]);
-		exec_command(heredoc_fd, pipefd[1], argv[3], envp);
-	}
-	else
-		close(heredoc_fd);
-}
-
-void	fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd, char *envp[])
-{
-	pid_t	pid;
-
-	pid = fork();
-	if (pid == -1)
-		handle_error("Pipe failed");
-	if (pid == 0)
-	{
-		close(pipefd1[1]);
-		close(pipefd2[0]);
-		exec_command(pipefd1[0], pipefd2[1], cmd, envp);
-	}
-}
+#include "../includes/pipex.h"
 
 void	make_pipe_mid(int n, int **pipefds, char **argv, char **envp)
 {
@@ -90,4 +59,47 @@ void	make_pipe_bonus(int argc, char **argv, char **envp, int cmd_count)
 	while (wait(NULL) != -1)
 		;
 	exit(WEXITSTATUS(status));
+}
+
+void	make_pipe(int argc, char **argv, char **envp)
+{
+	pid_t	pid;
+	int		pipefd[2];
+	int		status1;
+
+	if (pipe(pipefd) == -1)
+		handle_error("Pipe failed");
+	fork_cmd1(pipefd, argv, envp);
+	pid = fork_cmd2(pipefd, argc, argv, envp);
+	close(pipefd[0]);
+	close(pipefd[1]);
+	waitpid(pid, &status1, 0);
+	wait(NULL);
+	exit(WEXITSTATUS(status1));
+}
+
+int	**alloc_pipes(int cmd_count)
+{
+	int	**pipefds;
+	int	i;
+	int	j;
+
+	pipefds = (int **)malloc((cmd_count - 1) * sizeof(int *));
+	if (!pipefds)
+		handle_error("Memory Allocation Error");
+	i = 0;
+	while (i < cmd_count - 1)
+	{
+		pipefds[i] = (int *)malloc(sizeof(int) * 2);
+		if (!pipefds[i])
+		{
+			j = 0;
+			while (j < i)
+				free(pipefds[j]);
+			free(pipefds);
+			handle_error("Memory Allocation Error");
+		}
+		i++;
+	}
+	return (pipefds);
 }

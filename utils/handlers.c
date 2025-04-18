@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:26:36 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/18 01:23:19 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/18 17:36:18 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,37 @@ char	*command_handler(char *cmd, char **envp)
 		command = ft_strjoin(path_, cmd);
 		free(path_);
 		if (!access(command, X_OK))
-		{
-			free_split(paths);
-			return (command);
-		}
+			return (free_split(paths), command);
 		free(command);
 		i++;
 	}
 	free_split(paths);
 	return (perror("Command not found"), NULL);
+}
+int	heredoc_handler(char *limiter)
+{
+	int pipefd[2];
+	char *line;
+	char *limiter_nl;
+
+	limiter_nl = ft_strjoin(limiter, "\n");
+	if (pipe(pipefd) == -1)
+		handle_error("Pipe failed");
+	while (1)
+	{
+		write(1, "heredoc> ", 9);
+		line = get_next_line(0);
+		if (!line)
+			break ;
+		if (ft_strncmp(line, limiter_nl, ft_strlen(limiter_nl) + 1) == 0)
+		{
+			free(line);
+			break ;
+		}
+		write(pipefd[1], line, ft_strlen(line));
+		free(line);
+	}
+	free(limiter_nl);
+	close(pipefd[1]);
+	return (pipefd[0]);
 }

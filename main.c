@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/04 10:13:57 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/15 20:25:52 by maghumya         ###   ########.fr       */
+/*   Created: 2025/04/14 18:48:56 by maghumya          #+#    #+#             */
+/*   Updated: 2025/04/18 17:58:56 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,21 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	if (argc != 5)
+	char	c;
+	int		cmd_count;
+
+	cmd_count = argc - 3;
+	if (argc < 5)
 		return (ft_printf("Usage: ./pipex infile cmd1 cmd2 outfile\n"), 0);
-	make_pipe(argc, argv, envp);
+	if (ft_strncmp(argv[1], "here_doc", 9) == 0)
+	{
+		if (argc < 6)
+		{
+			ft_printf("Usage: ./pipex here_doc LIMITER cmd1 cmd2 outfile\n");
+			return (0);
+		}
+		cmd_count--;
+	}
+	make_pipe_bonus(argc, argv, envp, cmd_count);
 	return (0);
 }
