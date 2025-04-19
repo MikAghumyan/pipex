@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/18 17:14:53 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/19 18:53:01 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	make_pipe_mid(int n, int **pipefds, char **argv, char **envp)
 		fork_cmd_mid(pipefds[i - 1], pipefds[i], argv[i + first_cmd_i], envp);
 		close(pipefds[i - 1][1]);
 		close(pipefds[i - 1][0]);
-		free(pipefds[i - 1]);
 		i++;
 	}
 }
@@ -53,36 +52,49 @@ void	make_pipe_bonus(int argc, char **argv, char **envp, int cmd_count)
 	pid = fork_cmd2(pipefds[cmd_count - 2], argc, argv, envp);
 	close(pipefds[cmd_count - 2][1]);
 	close(pipefds[cmd_count - 2][0]);
-	free(pipefds[cmd_count - 2]);
-	free(pipefds);
 	waitpid(pid, &status, 0);
 	while (wait(NULL) != -1)
 		;
+	free_pipes(pipefds, cmd_count - 1);
 	exit(WEXITSTATUS(status));
 }
 
-void	make_pipe(int argc, char **argv, char **envp)
-{
-	pid_t	pid;
-	int		pipefd[2];
-	int		status1;
+// void	make_pipe(int argc, char **argv, char **envp)
+// {
+// 	pid_t	pid;
+// 	int		pipefd[2];
+// 	int		status1;
 
-	if (pipe(pipefd) == -1)
-		handle_error("Pipe failed");
-	fork_cmd1(pipefd, argv, envp);
-	pid = fork_cmd2(pipefd, argc, argv, envp);
-	close(pipefd[0]);
-	close(pipefd[1]);
-	waitpid(pid, &status1, 0);
-	wait(NULL);
-	exit(WEXITSTATUS(status1));
+// 	if (pipe(pipefd) == -1)
+// 		handle_error("Pipe failed");
+// 	fork_cmd1(pipefd, argv, envp);
+// 	pid = fork_cmd2(pipefd, argc, argv, envp);
+// 	close(pipefd[0]);
+// 	close(pipefd[1]);
+// 	waitpid(pid, &status1, 0);
+// 	wait(NULL);
+// 	exit(WEXITSTATUS(status1));
+// }
+
+void	free_pipes(int **arr, int n)
+{
+	int	j;
+
+	j = 0;
+	while (j < n)
+	{
+		free(arr[j]);
+		arr[j] = NULL;
+		j++;
+	}
+	free(arr);
+	arr = NULL;
 }
 
 int	**alloc_pipes(int cmd_count)
 {
 	int	**pipefds;
 	int	i;
-	int	j;
 
 	pipefds = (int **)malloc((cmd_count - 1) * sizeof(int *));
 	if (!pipefds)
@@ -93,10 +105,7 @@ int	**alloc_pipes(int cmd_count)
 		pipefds[i] = (int *)malloc(sizeof(int) * 2);
 		if (!pipefds[i])
 		{
-			j = 0;
-			while (j < i)
-				free(pipefds[j]);
-			free(pipefds);
+			free_pipes(pipefds, i);
 			handle_error("Memory Allocation Error");
 		}
 		i++;

@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 10:12:07 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/18 17:36:54 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/19 18:51:33 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,7 @@ void		fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd,
 void		fork_heredoc(int pipefd[2], int heredoc_fd, char *argv[],
 				char *envp[]);
 void		make_pipe_bonus(int argc, char **argv, char **envp, int cmd_count);
+
+void		free_pipes(int **arr, int n);
 
 #endif
