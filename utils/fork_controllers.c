@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/19 18:43:04 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/19 20:48:37 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	fork_heredoc(int pipefd[2], int heredoc_fd, char *argv[], char *envp[])
 {
 	pid_t	pid;
+	int		exec_failure;
 
 	pid = fork();
 	if (pid == -1)
@@ -22,7 +23,8 @@ void	fork_heredoc(int pipefd[2], int heredoc_fd, char *argv[], char *envp[])
 	if (pid == 0)
 	{
 		close(pipefd[0]);
-		exec_command(heredoc_fd, pipefd[1], argv[3], envp);
+		exec_failure = exec_command(heredoc_fd, pipefd[1], argv[3], envp);
+		exit(exec_failure);
 	}
 	else
 		close(heredoc_fd);
@@ -31,6 +33,7 @@ void	fork_heredoc(int pipefd[2], int heredoc_fd, char *argv[], char *envp[])
 void	fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd, char *envp[])
 {
 	pid_t	pid;
+	int		exec_failure;
 
 	pid = fork();
 	if (pid == -1)
@@ -39,7 +42,8 @@ void	fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd, char *envp[])
 	{
 		close(pipefd1[1]);
 		close(pipefd2[0]);
-		exec_command(pipefd1[0], pipefd2[1], cmd, envp);
+		exec_failure = exec_command(pipefd1[0], pipefd2[1], cmd, envp);
+		exit(exec_failure);
 	}
 }
 
@@ -47,6 +51,7 @@ void	fork_cmd1(int pipefd[2], char **argv, char **envp)
 {
 	pid_t	pid;
 	int		input_fd;
+	int		exit_failure;
 
 	pid = fork();
 	if (pid == -1)
@@ -55,7 +60,8 @@ void	fork_cmd1(int pipefd[2], char **argv, char **envp)
 	{
 		close(pipefd[0]);
 		input_fd = input_handler(argv);
-		exec_command(input_fd, pipefd[1], argv[2], envp);
+		exit_failure = exec_command(input_fd, pipefd[1], argv[2], envp);
+		exit(exit_failure);
 	}
 }
 
@@ -63,6 +69,7 @@ pid_t	fork_cmd2(int pipefd[2], int argc, char **argv, char **envp)
 {
 	pid_t	pid;
 	int		output_fd;
+	int		exec_failure;
 
 	pid = fork();
 	if (pid == -1)
@@ -71,12 +78,13 @@ pid_t	fork_cmd2(int pipefd[2], int argc, char **argv, char **envp)
 	{
 		close(pipefd[1]);
 		output_fd = output_handler(argv, argc);
-		exec_command(pipefd[0], output_fd, argv[argc - 2], envp);
+		exec_failure = exec_command(pipefd[0], output_fd, argv[argc - 2], envp);
+		exit(exec_failure);
 	}
 	return (pid);
 }
 
-void	exec_command(int fd_in, int fd_out, char *cmd, char **envp)
+int	exec_command(int fd_in, int fd_out, char *cmd, char **envp)
 {
 	t_cmd	cmd_;
 
@@ -87,13 +95,13 @@ void	exec_command(int fd_in, int fd_out, char *cmd, char **envp)
 	cmd_.cmd = NULL;
 	cmd_.args = ft_split(cmd, ' ');
 	if (!cmd_.args)
-		exit(EXIT_FAILURE);
+		return (EXIT_CMD_NOT_FOUND);
 	if (cmd_.args[0])
 		cmd_.cmd = command_handler(cmd_.args[0], envp);
 	if (!cmd_.cmd)
 	{
 		free_split(cmd_.args);
-		exit(EXIT_CMD_NOT_FOUND);
+		return (EXIT_CMD_NOT_FOUND);
 	}
 	if (execve(cmd_.cmd, cmd_.args, envp) == -1)
 		perror("Execve failed");
@@ -101,5 +109,5 @@ void	exec_command(int fd_in, int fd_out, char *cmd, char **envp)
 	free(cmd_.cmd);
 	close(fd_in);
 	close(fd_out);
-	exit(EXIT_FAILURE);
+	return (EXIT_FAILURE);
 }
