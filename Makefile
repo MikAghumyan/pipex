@@ -5,6 +5,7 @@ UTILS_SRC=	utils/handlers.c \
 			utils/parsers.c \
 			utils/fork_controllers.c \
 			utils/pipe_controllers.c \
+			utils/utils.c \
 
 GNL_SRC=	get_next_line/get_next_line.c\
 			get_next_line/get_next_line_utils.c

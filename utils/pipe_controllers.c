@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/19 18:53:01 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 00:59:46 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,29 +33,31 @@ void	make_pipe_mid(int n, int **pipefds, char **argv, char **envp)
 	}
 }
 
-void	make_pipe_bonus(int argc, char **argv, char **envp, int cmd_count)
+void	make_pipe_bonus(t_params *params)
 {
 	pid_t	pid;
 	int		**pipefds;
 	int		status;
 
-	pipefds = alloc_pipes(cmd_count);
+	pipefds = alloc_pipes(params->cmd_count);
 	if (!pipefds)
 		handle_error("Memory Allocation Error");
 	if (pipe(pipefds[0]) == -1)
 		handle_error("Pipe failed");
-	if (ft_strncmp(argv[1], "here_doc", 9) == 0)
-		fork_heredoc(pipefds[0], heredoc_handler(argv[2]), argv, envp);
+	if (ft_strncmp(params->argv[1], "here_doc", 9) == 0)
+		fork_heredoc(pipefds[0], heredoc_handler(params->argv[2]), params->argv,
+			params->envp);
 	else
-		fork_cmd1(pipefds[0], argv, envp);
-	make_pipe_mid(cmd_count - 1, pipefds, argv, envp);
-	pid = fork_cmd2(pipefds[cmd_count - 2], argc, argv, envp);
-	close(pipefds[cmd_count - 2][1]);
-	close(pipefds[cmd_count - 2][0]);
+		fork_cmd1(pipefds[0], params->argv, params->envp);
+	make_pipe_mid(params->pipe_count, pipefds, params->argv, params->envp);
+	pid = fork_cmd2(pipefds[params->pipe_count - 1], params->argc, params->argv,
+			params->envp);
+	close(pipefds[params->pipe_count - 1][1]);
+	close(pipefds[params->pipe_count - 1][0]);
 	waitpid(pid, &status, 0);
 	while (wait(NULL) != -1)
 		;
-	free_pipes(pipefds, cmd_count - 1);
+	free_pipes(pipefds, params->cmd_count - 1);
 	exit(WEXITSTATUS(status));
 }
 
