@@ -1,31 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/14 18:48:56 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/20 13:32:14 by maghumya         ###   ########.fr       */
+/*   Created: 2025/04/20 13:11:30 by maghumya          #+#    #+#             */
+/*   Updated: 2025/04/20 13:35:57 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/pipex.h"
+#include "../includes/pipex.h"
 
-int	main(int argc, char **argv, char **envp)
+void	puterr(char *filename, int _errornum)
 {
-	char	c;
+	ft_putstr_fd("pipex: ", 2);
+	ft_putstr_fd(strerror(_errornum), 2);
+	ft_putstr_fd(": ", 2);
+	ft_putendl_fd(filename, 2);
+}
 
-	if (argc < 5)
-		return (ft_printf("Usage: ./pipex infile cmd1 cmd2 outfile\n"), 0);
-	if (ft_strncmp(argv[1], "here_doc", 9) == 0)
-	{
-		if (argc < 6)
-		{
-			ft_printf("Usage: ./pipex here_doc LIMITER cmd1 cmd2 outfile\n");
-			return (0);
-		}
-	}
-	make_pipe_bonus(argc, argv, envp, get_cmd_count(argc, argv));
-	return (0);
+int	get_cmd_count(int argc, char **argv)
+{
+	if (strncmp((argv[1]), "here_doc", 9) == 0)
+		return (argc - 4);
+	return ((argc - 3));
 }

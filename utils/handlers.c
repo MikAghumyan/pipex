@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:26:36 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/20 11:21:07 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/20 13:37:29 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,7 @@ int	input_handler(char **argv)
 
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
-	{
-		ft_putstr_fd("pipex: ", 2);
-		ft_putstr_fd(strerror(errno), 2);
-		ft_putstr_fd(": ", 2);
-		ft_putendl_fd(argv[1], 2);
-	}
+		puterr(argv[1], errno);
 	return (fd);
 }
 
@@ -45,12 +40,7 @@ int	output_handler(char **argv, int argc)
 		o_flag |= O_TRUNC;
 	fd = open(argv[argc - 1], o_flag, 0644);
 	if (fd == -1)
-	{
-		ft_putstr_fd("pipex: ", 2);
-		ft_putstr_fd(strerror(errno), 2);
-		ft_putstr_fd(": ", 2);
-		ft_putendl_fd(argv[1], 2);
-	}
+		puterr(argv[argc - 1], errno);
 	return (fd);
 }
 
