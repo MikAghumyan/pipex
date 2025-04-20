@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 01:52:46 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 02:03:37 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,13 @@ void	make_pipe_bonus(t_params *params)
 	int		status;
 
 	pipefds = alloc_pipes(params->cmd_count);
+	params->pipefds = pipefds;
 	if (!pipefds)
 		handle_error("Memory Allocation Error");
 	if (pipe(pipefds[0]) == -1)
 		handle_error("Pipe failed");
 	if (ft_strncmp(params->argv[1], "here_doc", 9) == 0)
-		fork_heredoc(pipefds[0], heredoc_handler(params->argv[2]), params->argv,
-			params->envp);
+		fork_heredoc(pipefds[0], heredoc_handler(params->argv[2]), params);
 	else
 		fork_cmd1(pipefds[0], params->argv, params->envp);
 	make_pipe_mid(pipefds, params);

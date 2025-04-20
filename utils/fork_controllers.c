@@ -6,13 +6,13 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/20 11:12:20 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 02:02:36 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	fork_heredoc(int pipefd[2], int heredoc_fd, char *argv[], char *envp[])
+void	fork_heredoc(int pipefd[2], int heredoc_fd, t_params *params)
 {
 	pid_t	pid;
 	int		exec_failure;
@@ -23,7 +23,8 @@ void	fork_heredoc(int pipefd[2], int heredoc_fd, char *argv[], char *envp[])
 	if (pid == 0)
 	{
 		close(pipefd[0]);
-		exec_failure = exec_command(heredoc_fd, pipefd[1], argv[3], envp);
+		exec_failure = exec_command(heredoc_fd, pipefd[1], params->argv[3],
+				params->envp);
 		exit(exec_failure);
 	}
 	else
