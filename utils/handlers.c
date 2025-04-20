@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:26:36 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/18 17:36:18 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/20 11:21:07 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,12 @@ int	input_handler(char **argv)
 
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
-		handle_error("Error opening input file");
+	{
+		ft_putstr_fd("pipex: ", 2);
+		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd(": ", 2);
+		ft_putendl_fd(argv[1], 2);
+	}
 	return (fd);
 }
 
@@ -40,7 +45,12 @@ int	output_handler(char **argv, int argc)
 		o_flag |= O_TRUNC;
 	fd = open(argv[argc - 1], o_flag, 0644);
 	if (fd == -1)
-		handle_error("Error opening output file");
+	{
+		ft_putstr_fd("pipex: ", 2);
+		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd(": ", 2);
+		ft_putendl_fd(argv[1], 2);
+	}
 	return (fd);
 }
 
@@ -60,8 +70,10 @@ char	*command_handler(char *cmd, char **envp)
 		path_ = ft_strjoin(paths[i], "/");
 		command = ft_strjoin(path_, cmd);
 		free(path_);
-		if (!access(command, X_OK))
+		if (!access(command, F_OK) && !access(command, X_OK))
 			return (free_split(paths), command);
+		else if (!access(command, F_OK))
+			return (free_split(paths), errno = EACCES, NULL);
 		free(command);
 		i++;
 	}
@@ -70,9 +82,9 @@ char	*command_handler(char *cmd, char **envp)
 }
 int	heredoc_handler(char *limiter)
 {
-	int pipefd[2];
-	char *line;
-	char *limiter_nl;
+	int		pipefd[2];
+	char	*line;
+	char	*limiter_nl;
 
 	limiter_nl = ft_strjoin(limiter, "\n");
 	if (pipe(pipefd) == -1)

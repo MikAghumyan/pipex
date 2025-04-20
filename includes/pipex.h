@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 10:12:07 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/19 20:44:04 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/20 10:32:53 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 
 # include "../get_next_line/get_next_line.h"
 # include "../libft/libft.h"
+# include <errno.h>
 # include <fcntl.h>
 # include <stdio.h>
+# include <string.h>
 # include <sys/wait.h>
 
 typedef struct s_cmd

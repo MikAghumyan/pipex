@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 17:11:33 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/11 21:52:12 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/20 11:16:14 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,9 @@ char	**parse_path(char **envp)
 		envp++;
 	}
 	if (!path)
-	{
-		handle_error("PATH not found");
 		return (NULL);
-	}
 	paths = ft_split(path, ':');
 	if (!paths)
-	{
-		handle_error("Error splitting PATH");
 		return (NULL);
-	}
 	return (paths);
 }

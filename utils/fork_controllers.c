@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/19 20:48:37 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/20 11:12:20 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	fork_heredoc(int pipefd[2], int heredoc_fd, char *argv[], char *envp[])
 
 	pid = fork();
 	if (pid == -1)
-		handle_error("Pipe failed");
+		handle_error("Fork failed");
 	if (pid == 0)
 	{
 		close(pipefd[0]);
@@ -37,7 +37,7 @@ void	fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd, char *envp[])
 
 	pid = fork();
 	if (pid == -1)
-		handle_error("Pipe failed");
+		handle_error("Fork failed");
 	if (pid == 0)
 	{
 		close(pipefd1[1]);
@@ -60,6 +60,10 @@ void	fork_cmd1(int pipefd[2], char **argv, char **envp)
 	{
 		close(pipefd[0]);
 		input_fd = input_handler(argv);
+		if (input_fd < 0)
+		{
+			exit(errno);
+		}
 		exit_failure = exec_command(input_fd, pipefd[1], argv[2], envp);
 		exit(exit_failure);
 	}
@@ -78,6 +82,8 @@ pid_t	fork_cmd2(int pipefd[2], int argc, char **argv, char **envp)
 	{
 		close(pipefd[1]);
 		output_fd = output_handler(argv, argc);
+		if (output_fd < 0)
+			exit(errno);
 		exec_failure = exec_command(pipefd[0], output_fd, argv[argc - 2], envp);
 		exit(exec_failure);
 	}
@@ -100,8 +106,9 @@ int	exec_command(int fd_in, int fd_out, char *cmd, char **envp)
 		cmd_.cmd = command_handler(cmd_.args[0], envp);
 	if (!cmd_.cmd)
 	{
+		perror(cmd_.args[0]);
 		free_split(cmd_.args);
-		return (EXIT_CMD_NOT_FOUND);
+		return (errno);
 	}
 	if (execve(cmd_.cmd, cmd_.args, envp) == -1)
 		perror("Execve failed");
@@ -109,5 +116,5 @@ int	exec_command(int fd_in, int fd_out, char *cmd, char **envp)
 	free(cmd_.cmd);
 	close(fd_in);
 	close(fd_out);
-	return (EXIT_FAILURE);
+	return (errno);
 }
