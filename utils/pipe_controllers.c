@@ -6,27 +6,28 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 00:59:46 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 01:52:46 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	make_pipe_mid(int n, int **pipefds, char **argv, char **envp)
+void	make_pipe_mid(int **pipefds, t_params *params)
 {
 	int	i;
 	int	first_cmd_i;
 
-	if (ft_strncmp(argv[1], "here_doc", 9) == 0)
+	if (ft_strncmp(params->argv[1], "here_doc", 9) == 0)
 		first_cmd_i = 3;
 	else
 		first_cmd_i = 2;
 	i = 1;
-	while (i < n)
+	while (i < params->pipe_count)
 	{
 		if (pipe(pipefds[i]) == -1)
 			handle_error("Pipe failed");
-		fork_cmd_mid(pipefds[i - 1], pipefds[i], argv[i + first_cmd_i], envp);
+		fork_cmd_mid(pipefds[i - 1], pipefds[i], params->argv[i + first_cmd_i],
+			params->envp);
 		close(pipefds[i - 1][1]);
 		close(pipefds[i - 1][0]);
 		i++;
@@ -49,7 +50,7 @@ void	make_pipe_bonus(t_params *params)
 			params->envp);
 	else
 		fork_cmd1(pipefds[0], params->argv, params->envp);
-	make_pipe_mid(params->pipe_count, pipefds, params->argv, params->envp);
+	make_pipe_mid(pipefds, params);
 	pid = fork_cmd2(pipefds[params->pipe_count - 1], params->argc, params->argv,
 			params->envp);
 	close(pipefds[params->pipe_count - 1][1]);
