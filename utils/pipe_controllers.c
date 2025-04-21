@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 21:08:54 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 21:14:00 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,23 +60,6 @@ void	make_pipe(t_params *params)
 	free_pipes(pipefds);
 	exit(WEXITSTATUS(status));
 }
-
-// void	make_pipe(int argc, char **argv, char **envp)
-// {
-// 	pid_t	pid;
-// 	int		pipefd[2];
-// 	int		status1;
-
-// 	if (pipe(pipefd) == -1)
-// 		handle_error("Pipe failed");
-// 	fork_cmd1(pipefd, argv, envp);
-// 	pid = fork_cmd2(pipefd, argc, argv, envp);
-// 	close(pipefd[0]);
-// 	close(pipefd[1]);
-// 	waitpid(pid, &status1, 0);
-// 	wait(NULL);
-// 	exit(WEXITSTATUS(status1));
-// }
 
 void	free_pipes(int **arr)
 {

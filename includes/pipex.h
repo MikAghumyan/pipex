@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 10:12:07 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 21:09:11 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 21:13:52 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ char		**parse_path(char **envp);
 void		free_split(char **split);
 
 int			exec_command(int fd_in, int fd_out, char *cmd, char **envp);
-// void		make_pipe(int argc, char **argv, char **envp);
 void		fork_cmd1(int pipefd[2], t_params *params);
 pid_t		fork_cmd2(int pipefd[2], t_params *params);
 void		fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd,
