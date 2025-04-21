@@ -6,15 +6,17 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:26:36 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/20 13:37:29 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 16:56:29 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	handle_error(char *message)
+void	handle_error(char *message, int **pipes)
 {
 	perror(message);
+	if (pipes)
+		free_pipes(pipes);
 	exit(EXIT_FAILURE);
 }
 
@@ -78,7 +80,7 @@ int	heredoc_handler(char *limiter)
 
 	limiter_nl = ft_strjoin(limiter, "\n");
 	if (pipe(pipefd) == -1)
-		handle_error("Pipe failed");
+		handle_error("Pipe failed", NULL);
 	while (1)
 	{
 		write(1, "heredoc> ", 9);

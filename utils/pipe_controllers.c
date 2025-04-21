@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 16:41:35 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 17:01:27 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	make_pipe_mid(int **pipefds, t_params *params)
 	while (pipefds[i])
 	{
 		if (pipe(pipefds[i]) == -1)
-			handle_error("Pipe failed");
+			handle_error("Pipe failed", params->pipefds);
 		fork_cmd_mid(pipefds[i - 1], pipefds[i], params->argv[i + first_cmd_i],
 			params);
 		close(pipefds[i - 1][1]);
@@ -43,9 +43,9 @@ void	make_pipe_bonus(t_params *params)
 	pipefds = alloc_pipes(params->cmd_count);
 	params->pipefds = pipefds;
 	if (!pipefds)
-		handle_error("Memory Allocation Error");
+		handle_error("Memory Allocation Error", NULL);
 	if (pipe(pipefds[0]) == -1)
-		handle_error("Pipe failed");
+		handle_error("Pipe failed", params->pipefds);
 	if (ft_strncmp(params->argv[1], "here_doc", 9) == 0)
 		fork_heredoc(pipefds[0], heredoc_handler(params->argv[2]), params);
 	else
@@ -100,16 +100,13 @@ int	**alloc_pipes(int cmd_count)
 
 	pipefds = (int **)malloc((cmd_count) * sizeof(int *));
 	if (!pipefds)
-		handle_error("Memory Allocation Error");
+		handle_error("Memory Allocation Error", NULL);
 	i = 0;
 	while (i < cmd_count - 1)
 	{
 		pipefds[i] = (int *)malloc(sizeof(int) * 2);
 		if (!pipefds[i])
-		{
-			free_pipes(pipefds);
-			handle_error("Memory Allocation Error");
-		}
+			handle_error("Memory Allocation Error", pipefds);
 		i++;
 	}
 	pipefds[i] = NULL;

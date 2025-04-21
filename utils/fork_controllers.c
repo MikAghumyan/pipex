@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 10:16:17 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 17:03:17 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,13 @@ void	fork_heredoc(int pipefd[2], int heredoc_fd, t_params *params)
 
 	pid = fork();
 	if (pid == -1)
-		handle_error("Fork failed");
+		handle_error("Fork failed", params->pipefds);
 	if (pid == 0)
 	{
 		close(pipefd[0]);
 		exec_failure = exec_command(heredoc_fd, pipefd[1], params->argv[3],
 				params->envp);
+		free_pipes(params->pipefds);
 		exit(exec_failure);
 	}
 	else
@@ -39,12 +40,13 @@ void	fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd,
 
 	pid = fork();
 	if (pid == -1)
-		handle_error("Fork failed");
+		handle_error("Fork failed", params->pipefds);
 	if (pid == 0)
 	{
 		close(pipefd1[1]);
 		close(pipefd2[0]);
 		exec_failure = exec_command(pipefd1[0], pipefd2[1], cmd, params->envp);
+		free_pipes(params->pipefds);
 		exit(exec_failure);
 	}
 }
@@ -57,17 +59,19 @@ void	fork_cmd1(int pipefd[2], t_params *params)
 
 	pid = fork();
 	if (pid == -1)
-		handle_error("Fork failed");
+		handle_error("Fork failed", params->pipefds);
 	if (pid == 0)
 	{
 		close(pipefd[0]);
 		input_fd = input_handler(params->argv);
 		if (input_fd < 0)
 		{
+			free_pipes(params->pipefds);
 			exit(errno);
 		}
 		exit_failure = exec_command(input_fd, pipefd[1], params->argv[2],
 				params->envp);
+		free_pipes(params->pipefds);
 		exit(exit_failure);
 	}
 }
@@ -80,15 +84,19 @@ pid_t	fork_cmd2(int pipefd[2], t_params *params)
 
 	pid = fork();
 	if (pid == -1)
-		handle_error("Fork failed");
+		handle_error("Fork failed", params->pipefds);
 	if (pid == 0)
 	{
 		close(pipefd[1]);
 		output_fd = output_handler(params->argv, params->argc);
 		if (output_fd < 0)
+		{
+			free_pipes(params->pipefds);
 			exit(errno);
+		}
 		exec_failure = exec_command(pipefd[0], output_fd,
 				params->argv[params->argc - 2], params->envp);
+		free_pipes(params->pipefds);
 		exit(exec_failure);
 	}
 	return (pid);
