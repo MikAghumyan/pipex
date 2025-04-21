@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 10:19:06 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 16:41:35 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	make_pipe_mid(int **pipefds, t_params *params)
 	else
 		first_cmd_i = 2;
 	i = 1;
-	while (i < params->pipe_count)
+	while (pipefds[i])
 	{
 		if (pipe(pipefds[i]) == -1)
 			handle_error("Pipe failed");
@@ -57,7 +57,7 @@ void	make_pipe_bonus(t_params *params)
 	waitpid(pid, &status, 0);
 	while (wait(NULL) != -1)
 		;
-	free_pipes(pipefds, params->cmd_count - 1);
+	free_pipes(pipefds);
 	exit(WEXITSTATUS(status));
 }
 
@@ -78,12 +78,12 @@ void	make_pipe_bonus(t_params *params)
 // 	exit(WEXITSTATUS(status1));
 // }
 
-void	free_pipes(int **arr, int n)
+void	free_pipes(int **arr)
 {
 	int	j;
 
 	j = 0;
-	while (j < n)
+	while (arr[j])
 	{
 		free(arr[j]);
 		arr[j] = NULL;
@@ -98,7 +98,7 @@ int	**alloc_pipes(int cmd_count)
 	int	**pipefds;
 	int	i;
 
-	pipefds = (int **)malloc((cmd_count - 1) * sizeof(int *));
+	pipefds = (int **)malloc((cmd_count) * sizeof(int *));
 	if (!pipefds)
 		handle_error("Memory Allocation Error");
 	i = 0;
@@ -107,10 +107,11 @@ int	**alloc_pipes(int cmd_count)
 		pipefds[i] = (int *)malloc(sizeof(int) * 2);
 		if (!pipefds[i])
 		{
-			free_pipes(pipefds, i);
+			free_pipes(pipefds);
 			handle_error("Memory Allocation Error");
 		}
 		i++;
 	}
+	pipefds[i] = NULL;
 	return (pipefds);
 }
