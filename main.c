@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 18:48:56 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/20 22:09:06 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 21:09:02 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,6 @@ int	main(int argc, char **argv, char **envp)
 	prog_params.envp = envp;
 	prog_params.cmd_count = get_cmd_count(argc, argv);
 	prog_params.pipe_count = prog_params.cmd_count - 1;
-	make_pipe_bonus(&prog_params);
+	make_pipe(&prog_params);
 	return (0);
 }

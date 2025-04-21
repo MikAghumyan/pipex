@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 17:01:27 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 21:08:54 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	make_pipe_mid(int **pipefds, t_params *params)
 	}
 }
 
-void	make_pipe_bonus(t_params *params)
+void	make_pipe(t_params *params)
 {
 	pid_t	pid;
 	int		**pipefds;
