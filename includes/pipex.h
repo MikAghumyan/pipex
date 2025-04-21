@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 10:12:07 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 16:57:41 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:57:02 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_params
 }			t_params;
 
 # define EXIT_CMD_NOT_FOUND 127
+# define EXIT_CMD_CANT_EXEC 126
 
 void		handle_error(char *message, int **pipes);
 int			input_handler(char **argv);

@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 13:11:30 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/20 13:35:57 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 20:04:04 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,16 @@
 
 void	puterr(char *filename, int _errornum)
 {
+	char	*errmes;
+
+	if (_errornum == EXIT_CMD_CANT_EXEC)
+		errmes = "permission denied";
+	else if (_errornum == EXIT_CMD_NOT_FOUND)
+		errmes = "command not found";
+	else
+		errmes = strerror(_errornum);
 	ft_putstr_fd("pipex: ", 2);
-	ft_putstr_fd(strerror(_errornum), 2);
+	ft_putstr_fd(errmes, 2);
 	ft_putstr_fd(": ", 2);
 	ft_putendl_fd(filename, 2);
 }

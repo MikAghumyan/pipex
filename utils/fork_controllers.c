@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 18:55:39 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 20:09:55 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	fork_heredoc(int pipefd[2], int heredoc_fd, t_params *params)
 		exec_failure = exec_command(heredoc_fd, pipefd[1], params->argv[3],
 				params->envp);
 		free_pipes(params->pipefds);
-		puterr(params->argv[3], errno);
+		puterr(params->argv[3], exec_failure);
 		exit(exec_failure);
 	}
 	else
@@ -48,7 +48,7 @@ void	fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd,
 		close(pipefd2[0]);
 		exec_failure = exec_command(pipefd1[0], pipefd2[1], cmd, params->envp);
 		free_pipes(params->pipefds);
-		puterr(cmd, errno);
+		puterr(cmd, exec_failure);
 		exit(exec_failure);
 	}
 }
@@ -69,12 +69,12 @@ void	fork_cmd1(int pipefd[2], t_params *params)
 		if (input_fd < 0)
 		{
 			free_pipes(params->pipefds);
-			exit(errno);
+			exit(EXIT_FAILURE);
 		}
 		exit_failure = exec_command(input_fd, pipefd[1], params->argv[2],
 				params->envp);
 		free_pipes(params->pipefds);
-		puterr(params->argv[2], errno);
+		puterr(params->argv[2], exit_failure);
 		exit(exit_failure);
 	}
 }
@@ -95,12 +95,12 @@ pid_t	fork_cmd2(int pipefd[2], t_params *params)
 		if (output_fd < 0)
 		{
 			free_pipes(params->pipefds);
-			exit(errno);
+			exit(EXIT_FAILURE);
 		}
 		exec_failure = exec_command(pipefd[0], output_fd,
 				params->argv[params->argc - 2], params->envp);
 		free_pipes(params->pipefds);
-		puterr(params->argv[params->argc - 2], errno);
+		puterr(params->argv[params->argc - 2], exec_failure);
 		exit(exec_failure);
 	}
 	return (pid);
@@ -122,7 +122,6 @@ int	exec_command(int fd_in, int fd_out, char *cmd, char **envp)
 		cmd_.cmd = command_handler(cmd_.args[0], envp);
 	if (!cmd_.cmd)
 	{
-		errno = 2;
 		free_split(cmd_.args);
 		return (errno);
 	}

@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:26:36 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 18:15:05 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 20:08:44 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,12 @@ char	*command_handler(char *cmd, char **envp)
 		if (!access(command, F_OK) && !access(command, X_OK))
 			return (free_split(paths), command);
 		else if (!access(command, F_OK))
-			return (free_split(paths), errno = EACCES, NULL);
+			return (free_split(paths), errno = EXIT_CMD_CANT_EXEC, NULL);
 		free(command);
 		i++;
 	}
 	free_split(paths);
+	errno = EXIT_CMD_NOT_FOUND;
 	return (NULL);
 }
 int	heredoc_handler(char *limiter)
