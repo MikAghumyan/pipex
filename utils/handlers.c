@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:26:36 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 16:56:29 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:15:05 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ char	*command_handler(char *cmd, char **envp)
 		i++;
 	}
 	free_split(paths);
-	return (perror("Command not found"), NULL);
+	return (NULL);
 }
 int	heredoc_handler(char *limiter)
 {

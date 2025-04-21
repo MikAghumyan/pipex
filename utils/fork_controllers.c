@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 17:03:17 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:55:39 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	fork_heredoc(int pipefd[2], int heredoc_fd, t_params *params)
 		exec_failure = exec_command(heredoc_fd, pipefd[1], params->argv[3],
 				params->envp);
 		free_pipes(params->pipefds);
+		puterr(params->argv[3], errno);
 		exit(exec_failure);
 	}
 	else
@@ -47,6 +48,7 @@ void	fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd,
 		close(pipefd2[0]);
 		exec_failure = exec_command(pipefd1[0], pipefd2[1], cmd, params->envp);
 		free_pipes(params->pipefds);
+		puterr(cmd, errno);
 		exit(exec_failure);
 	}
 }
@@ -72,6 +74,7 @@ void	fork_cmd1(int pipefd[2], t_params *params)
 		exit_failure = exec_command(input_fd, pipefd[1], params->argv[2],
 				params->envp);
 		free_pipes(params->pipefds);
+		puterr(params->argv[2], errno);
 		exit(exit_failure);
 	}
 }
@@ -97,6 +100,7 @@ pid_t	fork_cmd2(int pipefd[2], t_params *params)
 		exec_failure = exec_command(pipefd[0], output_fd,
 				params->argv[params->argc - 2], params->envp);
 		free_pipes(params->pipefds);
+		puterr(params->argv[params->argc - 2], errno);
 		exit(exec_failure);
 	}
 	return (pid);
@@ -118,7 +122,7 @@ int	exec_command(int fd_in, int fd_out, char *cmd, char **envp)
 		cmd_.cmd = command_handler(cmd_.args[0], envp);
 	if (!cmd_.cmd)
 	{
-		perror(cmd_.args[0]);
+		errno = 2;
 		free_split(cmd_.args);
 		return (errno);
 	}
