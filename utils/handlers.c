@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:26:36 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 20:08:44 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 21:07:33 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ char	*command_handler(char *cmd, char **envp)
 	errno = EXIT_CMD_NOT_FOUND;
 	return (NULL);
 }
+
 int	heredoc_handler(char *limiter)
 {
 	int		pipefd[2];
