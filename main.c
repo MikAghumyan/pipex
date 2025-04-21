@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 18:48:56 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 21:09:02 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 21:16:44 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		c;
 	t_params	prog_params;
 
 	if (argc < 5)

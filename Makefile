@@ -1,5 +1,5 @@
 CC=cc
-CFLAGS=-Wall -Wextra 
+CFLAGS=-Wall -Wextra -Werror
 
 UTILS_SRC=	utils/handlers.c \
 			utils/parsers.c \
