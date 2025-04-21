@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 02:03:37 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 10:19:06 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	make_pipe_mid(int **pipefds, t_params *params)
 		if (pipe(pipefds[i]) == -1)
 			handle_error("Pipe failed");
 		fork_cmd_mid(pipefds[i - 1], pipefds[i], params->argv[i + first_cmd_i],
-			params->envp);
+			params);
 		close(pipefds[i - 1][1]);
 		close(pipefds[i - 1][0]);
 		i++;
@@ -49,10 +49,9 @@ void	make_pipe_bonus(t_params *params)
 	if (ft_strncmp(params->argv[1], "here_doc", 9) == 0)
 		fork_heredoc(pipefds[0], heredoc_handler(params->argv[2]), params);
 	else
-		fork_cmd1(pipefds[0], params->argv, params->envp);
+		fork_cmd1(pipefds[0], params);
 	make_pipe_mid(pipefds, params);
-	pid = fork_cmd2(pipefds[params->pipe_count - 1], params->argc, params->argv,
-			params->envp);
+	pid = fork_cmd2(pipefds[params->pipe_count - 1], params);
 	close(pipefds[params->pipe_count - 1][1]);
 	close(pipefds[params->pipe_count - 1][0]);
 	waitpid(pid, &status, 0);

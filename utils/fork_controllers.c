@@ -6,7 +6,7 @@
 /*   By: maghumya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:51:43 by maghumya          #+#    #+#             */
-/*   Updated: 2025/04/21 02:02:36 by maghumya         ###   ########.fr       */
+/*   Updated: 2025/04/21 10:16:17 by maghumya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ void	fork_heredoc(int pipefd[2], int heredoc_fd, t_params *params)
 		close(heredoc_fd);
 }
 
-void	fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd, char *envp[])
+void	fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd,
+		t_params *params)
 {
 	pid_t	pid;
 	int		exec_failure;
@@ -43,12 +44,12 @@ void	fork_cmd_mid(int pipefd1[2], int pipefd2[2], char *cmd, char *envp[])
 	{
 		close(pipefd1[1]);
 		close(pipefd2[0]);
-		exec_failure = exec_command(pipefd1[0], pipefd2[1], cmd, envp);
+		exec_failure = exec_command(pipefd1[0], pipefd2[1], cmd, params->envp);
 		exit(exec_failure);
 	}
 }
 
-void	fork_cmd1(int pipefd[2], char **argv, char **envp)
+void	fork_cmd1(int pipefd[2], t_params *params)
 {
 	pid_t	pid;
 	int		input_fd;
@@ -60,17 +61,18 @@ void	fork_cmd1(int pipefd[2], char **argv, char **envp)
 	if (pid == 0)
 	{
 		close(pipefd[0]);
-		input_fd = input_handler(argv);
+		input_fd = input_handler(params->argv);
 		if (input_fd < 0)
 		{
 			exit(errno);
 		}
-		exit_failure = exec_command(input_fd, pipefd[1], argv[2], envp);
+		exit_failure = exec_command(input_fd, pipefd[1], params->argv[2],
+				params->envp);
 		exit(exit_failure);
 	}
 }
 
-pid_t	fork_cmd2(int pipefd[2], int argc, char **argv, char **envp)
+pid_t	fork_cmd2(int pipefd[2], t_params *params)
 {
 	pid_t	pid;
 	int		output_fd;
@@ -82,10 +84,11 @@ pid_t	fork_cmd2(int pipefd[2], int argc, char **argv, char **envp)
 	if (pid == 0)
 	{
 		close(pipefd[1]);
-		output_fd = output_handler(argv, argc);
+		output_fd = output_handler(params->argv, params->argc);
 		if (output_fd < 0)
 			exit(errno);
-		exec_failure = exec_command(pipefd[0], output_fd, argv[argc - 2], envp);
+		exec_failure = exec_command(pipefd[0], output_fd,
+				params->argv[params->argc - 2], params->envp);
 		exit(exec_failure);
 	}
 	return (pid);
